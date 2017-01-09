@@ -10,10 +10,10 @@ use warnings;
 sub new {
     my ($class, %args) = @_;
 
-    $args->{_filenames} = {};
-    for my $e0 (@{ $self->{modules} // [] }) {
-        (my $e = "$e0.pm") = s!::!/!g;
-        push @{ $args->{_filenames} }, $e;
+    $args{_filenames} = [];
+    for my $e0 (@{ $args{modules} // [] }) {
+        (my $e = "$e0.pm") =~ s!::!/!g;
+        push @{ $args{_filenames} }, $e;
     }
 
     bless \%args, $class;
@@ -31,6 +31,8 @@ sub Require::Hook::Noop::INC {
 
 1;
 # ABSTRACT: No-op loading of some modules
+
+=for Pod::Coverage .+
 
 =head1 SYNOPSIS
 
