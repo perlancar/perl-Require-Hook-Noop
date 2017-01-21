@@ -24,8 +24,12 @@ my $noop_code = "1;\n";
 sub Require::Hook::Noop::INC {
     my ($self, $filename) = @_;
 
-    return \$noop_code if grep { $filename eq $_ } @{ $self->{_filenames} };
+    if (grep { $filename eq $_ } @{ $self->{_filenames} }) {
+        print STDERR __PACKAGE__ . ": require($filename) no-op'ed\n" if $self->{debug};
+        return \$noop_code;
+    }
 
+    print STDERR __PACKAGE__ . ": declined handling require($filename)\n" if $self->{debug};
     undef;
 }
 
@@ -60,6 +64,10 @@ Constructor. Known arguments:
 =item * modules => array
 
 Module names to no-op, e.g. C<< ["Mod::SubMod", "Mod2"] >>.
+
+=item * debug => bool
+
+If set to true, will print debug statements to STDERR.
 
 =back
 
